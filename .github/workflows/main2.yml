@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
           
       - name: execute py script # run sj-gobierno.py to get the latest data
-        run: python maisumteste.py
+        run: python novoteste.py
           
       - name: commit files
         run: |
