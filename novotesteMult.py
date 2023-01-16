@@ -40,8 +40,6 @@ options = [
 for option in options:
     chrome_options.add_argument(option)
     
-driver = webdriver.Chrome(options = chrome_options)
-
 depart = 'OPO'
 #destination = 'MAD'
 destinations = ['LIS', 'MAD']
@@ -68,7 +66,8 @@ for destination in destinations:
     time.sleep(10)
 
     for date in dates:
-
+      
+        driver = webdriver.Chrome(options = chrome_options)
         url = f'https://www.kayak.com/flights/{depart}-{destination}/{date}?sort=price_a'
         print(url)
         #driver = webdriver.Firefox(executable_path=r'C:\Users\rafae\OneDrive\Documentos\.wdm\drivers\geckodriver\win64\v0.32.0\geckodriver.exe', options=options)
@@ -124,4 +123,4 @@ for destination in destinations:
 
         time.sleep(20)
 
-final_df.to_csv('kayak_flight_data.csv')
+final_df.to_csv('data/kayak_flight_data.csv')
