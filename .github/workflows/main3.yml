@@ -1,4 +1,4 @@
-name: scrape3
+name: Scrape Multiple Destinations
 
 on:
   workflow_dispatch:
