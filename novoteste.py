@@ -4,13 +4,14 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import re
-
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
-
 import requests # 2
 import json # 3
+desired_width = 320
+pd.set_option('display.width', desired_width)
+pd.set_option('display.max_columns', 8)
 
 from pyvirtualdisplay import Display
 display = Display(visible=0, size=(800, 800))  
@@ -26,7 +27,6 @@ options = [
   # Define window size here
    "--window-size=1200,1200",
     "--ignore-certificate-errors"
- 
     #"--headless",
     #"--disable-gpu",
     #"--window-size=1920,1200",
@@ -41,9 +41,6 @@ for option in options:
     chrome_options.add_argument(option)
     
 driver = webdriver.Chrome(options = chrome_options)
-desired_width = 320
-pd.set_option('display.width', desired_width)
-pd.set_option('display.max_columns', 8)
 
 depart = 'OPO'
 destination = 'MAD'
@@ -60,20 +57,17 @@ final_df = pd.DataFrame({'depart_from': [],
   'airline': [],
   'flight_duration': []})
   
-options = Options()
-options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
+#options = Options()
+#options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
 #driver = webdriver.Firefox(executable_path=r'C:\Users\rafae\OneDrive\Documentos\.wdm\drivers\geckodriver\win64\v0.32.0\geckodriver.exe', options=options)
 
 url = f'https://www.kayak.com/flights/{depart}-{destination}/{date}?sort=price_a'
-
+print(url)
 #driver = webdriver.Firefox(executable_path=r'C:\Users\rafae\OneDrive\Documentos\.wdm\drivers\geckodriver\win64\v0.32.0\geckodriver.exe', options=options)
 driver.implicitly_wait(20)
 driver.get(url)
-
-time.sleep(20)
-        
+time.sleep(20)    
 html = driver.page_source
-
 soup = BeautifulSoup(html, 'html.parser')
 
 # departure times
@@ -115,7 +109,7 @@ df = pd.DataFrame({'depart_from': depart,
                    'price': price_lst[:15],
                    'airline': airline_lst[:15],
                    'flight_duration': duration_lst[:15]})
-
+print(df)
 final_df = pd.concat([final_df, df], ignore_index=True, sort=False)
 
 driver.close()
