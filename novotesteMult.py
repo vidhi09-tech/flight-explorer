@@ -64,11 +64,14 @@ final_df = pd.DataFrame({'depart_from': [],
 #dates = ['2023-01-20', '2023-01-21']
 
 for destination in destinations:
-
+    
     time.sleep(10)
 
     for date in dates:
       
+        print('Dest: '+destination)
+        print('Date: '+date)
+        
         driver = webdriver.Chrome(options = chrome_options)
         url = f'https://www.kayak.com/flights/{depart}-{destination}/{date}?sort=price_a'
         print(url)
@@ -126,5 +129,5 @@ for destination in destinations:
 
         time.sleep(20)
 
-filename=strftime("%Y%m%d%H%M", gmtime())+'_kayak_flight_data.csv'
+filename='data/'+strftime("%Y%m%d%H%M", gmtime())+'_kayak_flight_data.csv'
 final_df.to_csv(filename)
