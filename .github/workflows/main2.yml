@@ -1,4 +1,4 @@
-name: scrape3
+name: Scrape Single Destination
 
 on:
   workflow_dispatch:
