@@ -3,6 +3,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
 import time
+import re
 
 #!pip install webdriver-manager
 
@@ -49,21 +50,13 @@ for option in options:
 
     
 driver = webdriver.Chrome(options = chrome_options)
-
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
-import pandas as pd
-import time
-import re
-
 desired_width = 320
 pd.set_option('display.width', desired_width)
 pd.set_option('display.max_columns', 8)
 
 depart = 'OPO'
-destinations = ['MAD']
-dates = ['2023-01-20']
+destination = ['MAD']
+date = ['2023-01-20']
 
 final_df = pd.DataFrame({'depart_from': [],
   'arrive_at': [],
@@ -78,7 +71,7 @@ final_df = pd.DataFrame({'depart_from': [],
 #print(driver.title)
 url = f'https://www.kayak.com/flights/{depart}-{destination}/{date}?sort=price_a'
 
-driver = webdriver.Firefox(executable_path=r'C:\Users\rafae\OneDrive\Documentos\.wdm\drivers\geckodriver\win64\v0.32.0\geckodriver.exe', options=options)
+#driver = webdriver.Firefox(executable_path=r'C:\Users\rafae\OneDrive\Documentos\.wdm\drivers\geckodriver\win64\v0.32.0\geckodriver.exe', options=options)
 driver.implicitly_wait(20)
 driver.get(url)
 time.sleep(20)
