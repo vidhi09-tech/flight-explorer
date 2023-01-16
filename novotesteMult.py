@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import re
+from time import gmtime,strftime
+import datetime
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
@@ -107,15 +109,16 @@ for destination in destinations:
         durations = soup.findAll('div', attrs={'class': 'section duration allow-multi-modal-icons'})
         for duration in durations:
             duration_lst.append(' '.join(duration.text.split(' ')[:2]).replace('\n', ''))
-
+        
         df = pd.DataFrame({'depart_from': depart,
                            'arrive_at': destination,
                            'date': date,
-                           'depart_time': d_times_lst[:15],
-                           'arrival_time': a_times_lst[:15],
-                           'price': price_lst[:15],
-                           'airline': airline_lst[:15],
-                           'flight_duration': duration_lst[:15]})
+                           'depart_time': d_times_lst[:10],
+                           'arrival_time': a_times_lst[:10],
+                           'price': price_lst[:10],
+                           'airline': airline_lst[:10],
+                           'flight_duration': duration_lst[:10]})
+        print(df)
 
         final_df = pd.concat([final_df, df], ignore_index=True, sort=False)
 
@@ -123,4 +126,5 @@ for destination in destinations:
 
         time.sleep(20)
 
-final_df.to_csv('data/kayak_flight_data.csv')
+filename=strftime("%Y%m%d%H%M", gmtime())+'_kayak_flight_data.csv'
+final_df.to_csv(filename)
