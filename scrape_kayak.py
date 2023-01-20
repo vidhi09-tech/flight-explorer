@@ -54,6 +54,7 @@ start='20230601'
 end='20230630'
 
 data = datetime.datetime.strptime(start, '%Y%m%d')
+mes = datetime.datetime.strptime(start, '%Y%m%d').month
 #calendar.month_name[data.month]
 #str(data.year)
 
