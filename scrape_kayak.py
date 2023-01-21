@@ -42,7 +42,9 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
         df.loc[i] = row
     
     city_mins = df.groupby(['City']).idxmin().astype(int)
-    df = df.loc[city_mins['Price'].to_list()]
+    df['MinPrice'] = df.loc[city_mins['Price'].to_list()].Price
+    df['is_MinPrice'] = df['Price'].eq(df['MinPrice']).astype(int)
+    #df = df.loc[city_mins['Price'].to_list()]
     # There is a glitch where some flights are returned with unrealistically
     # prices, so we'll remove those entries.
     df = df.where(df['Price']!=999999).dropna()
