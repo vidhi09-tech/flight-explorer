@@ -73,4 +73,5 @@ origins = ['OPO','MXP','NAP']
 for origin in origins:
     #df=scrape_kayak(start,end,origin)
     df=scrape_kayak(airport=origin)
-    df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_'+calendar.month_name[mes]+'_'+str(data.year)+'.csv',index=False)
+    #df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_'+calendar.month_name[mes]+'_2023'+'.csv',index=False)
+    df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False)
