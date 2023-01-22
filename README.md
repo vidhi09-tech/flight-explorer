@@ -1,6 +1,6 @@
 # Scraping Kayak flights
 
-Calling an API using Python to store flight prices from some airports
+Calling an API using Python to store flight prices departing from some european airports: OPO, MXP, LIS and NAP so far 😊
 
 ## Next steps:  
 * Analyzing collected data
