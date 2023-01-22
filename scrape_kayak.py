@@ -61,15 +61,14 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
     return df
   
 #airport='OPO'
-start='20230601'
-end='20230630'
-
-data = datetime.strptime(start, '%Y%m%d')
-mes = datetime.strptime(start, '%Y%m%d').month
+#start='20230601'
+#end='20230630'
+#data = datetime.strptime(start, '%Y%m%d')
+#mes = datetime.strptime(start, '%Y%m%d').month
 #calendar.month_name[data.month]
 #str(data.year)
 
-origins = ['OPO','MXP','NAP'] 
+origins = ['OPO','MXP','NAP','LIS'] 
 for origin in origins:
     #df=scrape_kayak(start,end,origin)
     df=scrape_kayak(airport=origin)
