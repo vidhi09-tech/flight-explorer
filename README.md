@@ -1,4 +1,4 @@
-# Scraping Kayak flights
+# Scraping Kayak flight prices
 
 Calling an API using Python to store flight prices departing from some european airports: OPO, MXP, LIS and NAP so far 😊
 
