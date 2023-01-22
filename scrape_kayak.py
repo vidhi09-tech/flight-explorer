@@ -2,7 +2,7 @@ import json
 import requests
 import pandas as pd
 import calendar
-import datetime
+from datetime import datetime
 from time import gmtime, strftime
 
 def scrape_kayak(start='', end='', airport = 'OPO'):
@@ -24,9 +24,18 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
     #end = '&return=' + str(end)
     #"https://www.kayak.pt/s/horizon/exploreapi/destinations?airport=OPO&budget=&depart=20230601&return=20230630&tripdurationrange=4%2C7&duration=&flightMaxStops=&stopsFilterActive=false&topRightLat=51.82490080841914&topRightLon=8.962652968749989&bottomLeftLat=28.636584579286538&bottomLeftLon=-26.32543296874999&zoomLevel=5&selectedMarker=&themeCode=&selectedDestination="
     
+    format = "%Y%m%d"
+    res = False
+    try:
+        res = bool(datetime.strptime(start, format))
+    except ValueError:
+        res = False
+    if res: 
+        #print(res)
+        url = "https://www.kayak.pt/s/horizon/exploreapi/destinations?airport=" + airport + "&budget=&depart=" + start + "&return="+ end + "&tripdurationrange=4%2C7&duration=&flightMaxStops=&stopsFilterActive=false&topRightLat=51.82490080841914&topRightLon=8.962652968749989&bottomLeftLat=28.636584579286538&bottomLeftLon=-26.32543296874999&zoomLevel=5&selectedMarker=&themeCode=&selectedDestination="
+    else: 
+        url = "https://www.kayak.pt/s/horizon/exploreapi/destinations?airport=" + airport + "&budget=&tripdurationrange=4%2C7&duration=&flightMaxStops=&stopsFilterActive=false&topRightLat=51.82490080841914&topRightLon=8.962652968749989&bottomLeftLat=28.636584579286538&bottomLeftLon=-26.32543296874999&zoomLevel=5&selectedMarker=&themeCode=&selectedDestination="
     
-    url = "https://www.kayak.pt/s/horizon/exploreapi/destinations?airport=" + airport + "&budget=&depart=" + start + "&return="+ end + \
-    "&tripdurationrange=4%2C7&duration=&flightMaxStops=&stopsFilterActive=false&topRightLat=51.82490080841914&topRightLon=8.962652968749989&bottomLeftLat=28.636584579286538&bottomLeftLon=-26.32543296874999&zoomLevel=5&selectedMarker=&themeCode=&selectedDestination="
     response = requests.post(url).json()
 
     df = pd.DataFrame(columns=['City', 'Country', 'Duration','Price', 'Airline', 'Airport', 'Depart','Return', 'Link'])
@@ -55,12 +64,13 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
 start='20230601'
 end='20230630'
 
-data = datetime.datetime.strptime(start, '%Y%m%d')
-mes = datetime.datetime.strptime(start, '%Y%m%d').month
+data = datetime.strptime(start, '%Y%m%d')
+mes = datetime.strptime(start, '%Y%m%d').month
 #calendar.month_name[data.month]
 #str(data.year)
 
 origins = ['OPO','MXP','NAP'] 
 for origin in origins:
-    df=scrape_kayak(start,end,origin)
+    #df=scrape_kayak(start,end,origin)
+    df=scrape_kayak(airport=origin)
     df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_'+calendar.month_name[mes]+'_'+str(data.year)+'.csv',index=False)
