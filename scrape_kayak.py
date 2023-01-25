@@ -68,7 +68,7 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
 #calendar.month_name[data.month]
 #str(data.year)
 
-origins = ['OPO','MXP','NAP','LIS'] 
+origins = ['OPO','MXP','NAP','LIS','MAD'] 
 for origin in origins:
     #df=scrape_kayak(start,end,origin)
     df=scrape_kayak(airport=origin)
