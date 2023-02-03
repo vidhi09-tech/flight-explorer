@@ -1,7 +1,8 @@
 # Scraping Kayak flight prices
 
 ## Business goal
-Collecting and analyzing plane ticket prices - scraped from Kayak Explore - to determine whether factors like day of the week and time of the day where tickets are usually cheaper.
+Collecting and analyzing plane ticket prices - scraped from Kayak Explore - to determine whether factors like day of the week and time of the day where tickets are usually cheaper.  
+
 Departing airports: Porto, Lisbon, Madrid, Milano (Malpensa) and Napoli
 
 [![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
