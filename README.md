@@ -16,3 +16,5 @@ Departing airports: Porto, Lisbon, Madrid, Milano (Malpensa) and Napoli
 - [ ] Test e-mail output
 - [ ] Setting up alert system that will send automated e-mail when tickets are available at good prices (see item above)
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
+- [ ] Store results in a Google Bigquery database
+- [ ] Streamlit page to show some results
