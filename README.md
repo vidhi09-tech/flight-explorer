@@ -12,6 +12,8 @@ Departing airports: Porto, Lisbon, Madrid, Milano (Malpensa) and Napoli
 - [x] Setting up automated scraper script ( Python )  
 - [ ] Creating parameter file for reading configs like departing airports and filter conditions (time of the year, one-way or round trip, etc.)
 - [ ] Determining price baseline for each destination
+- [ ] Save new baselines to Google Bigquery
+- [ ] Read baselines from Google Bigquery at the end of each execution
 - [ ] What criteria should I use to determine whether a price is good for a certain route?
 - [ ] Test e-mail output
 - [ ] Setting up alert system that will send automated e-mail when tickets are available at good prices (see item above)
