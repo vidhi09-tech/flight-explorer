@@ -1,3 +1,0 @@
-json==2.0.9
-google.cloud.bigquery==3.6.0
-pandas==1.5.3
