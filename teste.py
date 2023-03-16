@@ -30,11 +30,11 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import ssl 
+import ssl
 sender = 'rafabelokurows@gmail.com'
 recipient = 'rafabelokurows@gmail.com'
 #password = input(str('Enter your password: '))
-app_password = os.environ.get['APP_PASSWORD'] 
+app_password = os.getenv['APP_PASSWORD'] 
 password = app_password #change this when pushin to Github
 subject = 'Deals on airline tickets out of '+city
 #body = 'Sent using Python (if it worked)'
