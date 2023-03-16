@@ -34,7 +34,8 @@ import ssl
 sender = 'rafabelokurows@gmail.com'
 recipient = 'rafabelokurows@gmail.com'
 #password = input(str('Enter your password: '))
-password = os.environ['APP_PASSWORD'] #change this when pushin to Github
+app_password = os.environ['APP_PASSWORD'] 
+password = app_password #change this when pushin to Github
 subject = 'Deals on airline tickets out of '+city
 #body = 'Sent using Python (if it worked)'
 
