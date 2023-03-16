@@ -5,7 +5,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 
 #service_account_info = json.load(open(os.environ['CONFIG_JSON']))
-service_account_info = json.load(open('config.json'])
+service_account_info = json.load(open('config.json'))
 SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
 
 credentials = service_account.Credentials.from_service_account_info(
