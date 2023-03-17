@@ -150,12 +150,22 @@ def send_mail(smallerprices,summarydf,city):
     recipient = 'rafabelokurows@gmail.com'
     #password = input(str('Enter your password: '))
     password = os.getenv('APP_PASSWORD') #change this when pushin to Github
-    subject = 'Deals on airline tickets out of '+city
     
-    textBefore = "<p>Hey, check out this new deals I've found for airline tickets out of "+city+".</p>This is the summary of the last run:\n"
-    textMiddle = "<p>\nFlights below are the best price yet for these routes (on each specific month) and under 100 Euros!</p>\n"
-    html = textBefore + tableSummary + textMiddle + tableUnder100
-
+    
+    if len(smallerprices) == 0:
+        subject = 'Sorry, no deals this time for '+city
+        textBefore = "<p>Hey, we haven't found deals for airline tickets out of "+city+" this time.</p>"
+        html = textBefore
+    elif len(smaller.query("Price <= 100")) == 0:
+        subject = 'Deals on airline tickets out of '+city
+        textBefore = "<p>Hey, we've found a few deals for airline tickets out of "+city+" , although none for lass than €100.</p>This is the summary of the last run:\n"
+        html = textBefore + tableSummary
+    else:
+        subject = 'Deals on airline tickets out of '+city
+        textBefore = "<p>Hey, check out this new deals I've found for airline tickets out of "+city+".</p>This is the summary of the last run:\n"
+        textMiddle = "<p>\nFlights below are the best price yet for these routes (on each specific month) and under 100 Euros!</p>\n"
+        html = textBefore + tableSummary + textMiddle + tableUnder100
+        
     message = MIMEMultipart()
     message['From'] = sender
     message['To'] = recipient
