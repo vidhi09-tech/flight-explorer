@@ -91,7 +91,7 @@ def generate_baseline(city):
     cols = cols[-1:] + cols[:-1]
     df = df[cols]
     
-    df['date_query'] = pd.to_datetime(df['filename'].str[5:17], format='%Y%m%d%H%M')
+    df['date_query'] = pd.to_datetime(df['filename'].str[:11], format='%Y%m%d%H%M')
     df['year_query'] = pd.DatetimeIndex(df['date_query']).year
     df['month_query'] = pd.DatetimeIndex(df['date_query']).month
     df['day_query'] = pd.DatetimeIndex(df['date_query']).day
