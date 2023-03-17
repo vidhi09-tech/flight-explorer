@@ -79,6 +79,7 @@ def generate_baseline(city):
     A data frame containing all destination cities and minimum historical prices for each route.
     """
     all_files = glob.glob("data/*"+city+"*.csv")
+    all_files = [f for f in all_files if 'baseline' not in f and 'smallerprices' not in  and 'summary' not in f]
     df = pd.DataFrame()
     #loop through all the files and store them in the dataframe
     for f in all_files:
