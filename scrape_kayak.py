@@ -157,7 +157,7 @@ def send_mail(smallerprices,summarydf,city):
         subject = 'Sorry, no deals this time for '+city
         textBefore = "<p>Hey, we haven't found deals for airline tickets out of "+city+" this time.</p>"
         html = textBefore
-    elif len(smaller.query("Price <= 100")) == 0:
+    elif len(smallerprices.query("Price <= 100")) == 0:
         subject = 'Deals on airline tickets out of '+city
         textBefore = "<p>Hey, we've found a few deals for airline tickets out of "+city+" , although none for lass than €100.</p>This is the summary of the last run:\n"
         html = textBefore + tableSummary
