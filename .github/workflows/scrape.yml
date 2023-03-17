@@ -24,20 +24,33 @@ jobs:
       - name: install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install requests pandas
+          pip install requests pandas google.cloud.bigquery pandas-gbq
                     
       - name: execute py script # run sj-gobierno.py to get the latest data
         run: python scrape_kayak.py
+        env: 
+            GCP_PRIVATE_KEY: ${{ secrets.GCP_PRIVATE_KEY }}
+            GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+            GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
+            APP_PASSWORD: ${{ secrets.APP_PASSWORD }} 
           
       - name: commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git commit -m "update data" -a
+          git diff-index --quiet HEAD || git commit -m 'update'
+        env: 
+          GCP_PRIVATE_KEY: ${{ secrets.GCP_PRIVATE_KEY }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_CLIENT_ID: ${{ secrets.GCP_CLIENT_ID }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }} 
           
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main  
+
+
+#git commit -m "update data" -a
