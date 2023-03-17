@@ -24,7 +24,7 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
     future.
     Returns:
     df - a data frame containing all destination cities and corresponding
-    flight information returned by the scrape
+    flight information returned by the scraper
     """
 
     # Format the beginning and end dates to insert them into the URL
@@ -61,9 +61,6 @@ def scrape_kayak(start='', end='', airport = 'OPO'):
     city_mins = df.groupby(['City']).idxmin().astype(int)
     df['MinPrice'] = df.loc[city_mins['Price'].to_list()].Price
     df['is_MinPrice'] = df['Price'].eq(df['MinPrice']).astype(int)
-    #df = df.loc[city_mins['Price'].to_list()]
-    # There is a glitch where some flights are returned with unrealistically
-    # prices, so we'll remove those entries.
     df = df.where(df['Price']!=999999).dropna()
 
     return df
@@ -78,8 +75,8 @@ def generate_baseline(city):
     Returns:
     A data frame containing all destination cities and minimum historical prices for each route.
     """
-    all_files = glob.glob("data/*"+city+"*.csv")
-    all_files = [f for f in all_files if 'baseline' not in f and 'smallerprices' not in f and 'summary' not in f]
+    all_files = glob.glob("data/*"+city+"*.csv") #reads all files from "data" folder
+    all_files = [f for f in all_files if 'baseline' not in f and 'smallerprices' not in f and 'summary' not in f] #filter out files with these names
     df = pd.DataFrame()
     #loop through all the files and store them in the dataframe
     for f in all_files:
@@ -93,6 +90,7 @@ def generate_baseline(city):
     cols = cols[-1:] + cols[:-1]
     df = df[cols]
     
+    #some datetime columns
     df['date_query'] = pd.to_datetime(df['filename'].str[:11], format='%Y%m%d%H%M')
     df['year_query'] = pd.DatetimeIndex(df['date_query']).year
     df['month_query'] = pd.DatetimeIndex(df['date_query']).month
@@ -104,9 +102,8 @@ def generate_baseline(city):
     df['days_advance'] = pd.to_datetime(df['Depart'], infer_datetime_format=True)-pd.to_datetime(df['date_query'], infer_datetime_format=True)
     df['CityOrigin'] = city
 
+    #summarizing dataframe
     baseline = df.query("Depart >= date_query").groupby(['City','Country','year_depart','month_depart']).agg(minPrice=('Price', 'min'),meanPrice=('Price', 'mean'),medianPrice=('Price', 'median')).sort_values(['minPrice'],ascending=True).reset_index()
-    #menoresprecos=df.query("Depart >= dateQuery").groupby(['City','Country','year_depart','month_depart']).agg({'Price': lambda x: (x < min(x)*1.2).sum()})
-    #baselineOPO = baselineOPO.join(menoresprecos, rsuffix='_minPrices').reset_index().rename(columns={'Price': 'inside20pct'})
     baseline.insert(0, 'CityOrigin', city)
     baseline['timestamp'] = datetime.now()
     baseline['timestamp']  = baseline['timestamp'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
@@ -114,9 +111,17 @@ def generate_baseline(city):
     return(baseline)
 
 def compare_prices(newdf,basedf,city):
-    
-#     file=filename.replace(".csv","")
-#     data = pd.read_csv(filename)
+    """
+    Compares prices found in this run against a baseline file (as created by "generate_baseline" function defined above).
+    Parameters:
+    newdf: the dataframe with prices scraped in the current run 
+    basedf: the baseline dataframe (as created by "generate_baseline" function defined above).
+    city: the origin airport
+    Returns:
+    1.A data frame containing all flights that had prices below historical minimum prices.
+    2.A data frame with summary of the comparison to report and send an email. 
+    """
+
     newdf.sort_values(by=['Price'],ascending=True)
     newdf['year_depart'] = pd.DatetimeIndex(newdf['Depart']).year
     newdf['month_depart'] = pd.DatetimeIndex(newdf['Depart']).month
@@ -136,38 +141,40 @@ def compare_prices(newdf,basedf,city):
     return(smaller,summarydf)
 
 def send_mail(smallerprices,summarydf,city):
-    
+    """
+    Send an automated e-mail for each origin airport reporting how many prices were found to be lower than the historical minimum for each
+    combination of destination/month.
+    Parameters:
+    Dataframes generated in the "compare_prices" function.
+    Returns:
+    Nothing, only send the e-mail(s).
+    """
     tableSummary = summarydf.to_html()
     tableSmallerprices = smallerprices.loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
         'difPricePct': '{:,.2f}%'.format,
         'difPrice': '{:,.2f}'.format,
         'Price': '€{:,.2f}'.format,
         'minPrice': '€{:,.2f}'.format},render_links=True)
-# tableUnder20pct = df.query("difPricePct < -20").loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct"]].reset_index(drop=True).to_html(formatters={
-#     'difPricePct': '{:,.2f}'.format,
-#     'difPrice': '€{:,.2f}'.format
-# })
     tableUnder100 = smallerprices.query("difPricePct < 0 & Price < 100").loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
         'difPricePct': '{:,.2f}%'.format,
         'difPrice': '{:,.2f}'.format,
         'Price': '€{:,.2f}'.format,
         'minPrice': '€{:,.2f}'.format},render_links=True)
-    sender = 'rafabelokurows@gmail.com'
-    recipient = 'rafabelokurows@gmail.com'
-    #password = input(str('Enter your password: '))
-    password = os.getenv('APP_PASSWORD') #change this when pushin to Github
+    sender = 'rafabelokurows@gmail.com' #if you're reading this and you're not me, change this e-mail to whichever e-mail you wanna use for this.
+    recipient = 'rafabelokurows@gmail.com' #if you're reading this and you're not me, change this e-mail to whichever e-mail you wanna use for this.
+    password = os.getenv('APP_PASSWORD') #the APP PASSWORD as generated on the Security Settings of the Gmail account configured above.
     
     
-    if len(smallerprices) == 0:
+    if len(smallerprices) == 0: #if none of the prices are smaller than historical minimum prices
         subject = 'Sorry, no deals this time for '+city
         textBefore = "<p>Hey, we haven't found deals for airline tickets out of "+city+" this time.</p>"
         html = textBefore
-    elif len(smallerprices.query("Price <= 100")) == 0:
+    elif len(smallerprices.query("Price <= 100")) == 0: #if some prices are smaller than historical minimum prices, but none is under €100
         subject = 'Deals on airline tickets out of '+city
         textBefore = "<p>Hey, we've found a few deals for airline tickets out of "+city+" , although none for lass than €100.</p>This is the summary of the last run:\n"
         textMiddle = "<p>And here are the deals:</p>"
         html = textBefore + tableSummary + textMiddle + tableSmallerprices
-    else:
+    else: #yeah, we found some prices under €100 as well
         subject = 'Deals on airline tickets out of '+city
         textBefore = "<p>Hey, check out this new deals I've found for airline tickets out of "+city+".</p>This is the summary of the last run:\n"
         textMiddle = "<p>\nAnd even better, we've found flights with the best price yet for their routes (on each specific month) and under <b>100 Euros</b>!</p>\n"
@@ -186,24 +193,14 @@ def send_mail(smallerprices,summarydf,city):
 
     print('Email with deals sent to ',recipient)
     
-    
-#airport='OPO'
-#start='20230601'
-#end='20230630'
-#data = datetime.strptime(start, '%Y%m%d')
-#mes = datetime.strptime(start, '%Y%m%d').month
-#calendar.month_name[data.month]
-#str(data.year)
+origins = ['OPO','MXP','NAP','LIS','MAD']  #airports to find ticket prices
 
-origins = ['OPO','MXP','NAP','LIS','MAD'] 
 for origin in origins:
-    #df=scrape_kayak(start,end,origin)
     df = scrape_kayak(airport = origin)
-    #df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_'+calendar.month_name[mes]+'_2023'+'.csv',index=False)
-    df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False)
-    baseline = generate_baseline(city = origin)
-    a,b = compare_prices(newdf = df, basedf = baseline, city = origin)
-    baseline.to_csv('data/baseline_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False)
-    a.to_csv('data/smallerprices_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False)
-    b.to_csv('data/summary_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False)
-    send_mail(smallerprices = a,summarydf = b,city = origin)
+    baseline = generate_baseline(city = origin) #after generating the csv file, recompiles the baseline file, finding minimum prices for each route/month
+    df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves a CSV file with all prices for each origin airport
+    a,b = compare_prices(newdf = df, basedf = baseline, city = origin) #compares prices obtained in this run against baseline of all files stored in "data" folder
+    baseline.to_csv('data/baseline_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves new baseline
+    a.to_csv('data/smallerprices_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves CSV files with prices found in this run that were less than baseline minimum amounts
+    b.to_csv('data/summary_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #and summary file, for good measure
+    send_mail(smallerprices = a,summarydf = b,city = origin) #sends an email for each origin airport reporting how many prices were lower than the historical minimum
