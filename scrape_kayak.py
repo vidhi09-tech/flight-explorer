@@ -138,6 +138,11 @@ def compare_prices(newdf,basedf,city):
 def send_mail(smallerprices,summarydf,city):
     
     tableSummary = summarydf.to_html()
+    tableSmallerprices = smallerprices.to_html().loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
+        'difPricePct': '{:,.2f}%'.format,
+        'difPrice': '{:,.2f}'.format,
+        'Price': '€{:,.2f}'.format,
+        'minPrice': '€{:,.2f}'.format},render_links=True)
 # tableUnder20pct = df.query("difPricePct < -20").loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct"]].reset_index(drop=True).to_html(formatters={
 #     'difPricePct': '{:,.2f}'.format,
 #     'difPrice': '€{:,.2f}'.format
@@ -160,11 +165,12 @@ def send_mail(smallerprices,summarydf,city):
     elif len(smallerprices.query("Price <= 100")) == 0:
         subject = 'Deals on airline tickets out of '+city
         textBefore = "<p>Hey, we've found a few deals for airline tickets out of "+city+" , although none for lass than €100.</p>This is the summary of the last run:\n"
-        html = textBefore + tableSummary
+        textMiddle = "<p>And here are the deals:</p>"
+        html = textBefore + tableSummary + textMiddle + tableSmallerprices
     else:
         subject = 'Deals on airline tickets out of '+city
         textBefore = "<p>Hey, check out this new deals I've found for airline tickets out of "+city+".</p>This is the summary of the last run:\n"
-        textMiddle = "<p>\nFlights below are the best price yet for these routes (on each specific month) and under 100 Euros!</p>\n"
+        textMiddle = "<p>\nAnd even better, we've found flights with the best price yet for their routes (on each specific month) and under <b>100 Euros</b>!</p>\n"
         html = textBefore + tableSummary + textMiddle + tableUnder100
         
     message = MIMEMultipart()
