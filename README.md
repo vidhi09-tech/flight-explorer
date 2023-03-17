@@ -1,4 +1,4 @@
-# Comparing Kayak flight prices
+# Comparing Kayak flight prices ✈
 
 ## Goals
 - Collect and analyze plane ticket prices - scraped from Kayak Explore - to determine whether factors like day of the week and time of the day directly influence ticket prices.  
@@ -13,10 +13,6 @@ Airports of interest so far:
 - Madrid (MAD)
 - Milano Malpensa (MXP)
 - Napoli (NAP)
-
-Automated data collection task:  
-
-[![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
 
 ## Challenges
 In addition to the obvious learning curve of each tool and package used:
@@ -49,3 +45,6 @@ In addition to the obvious learning curve of each tool and package used:
 - [ ] Powerpoint presentation highlighting challenges, solutions and results
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
 
+Automated data collection task:  
+
+[![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
