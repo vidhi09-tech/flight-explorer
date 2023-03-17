@@ -138,7 +138,7 @@ def compare_prices(newdf,basedf,city):
 def send_mail(smallerprices,summarydf,city):
     
     tableSummary = summarydf.to_html()
-    tableSmallerprices = smallerprices.to_html().loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
+    tableSmallerprices = smallerprices.loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
         'difPricePct': '{:,.2f}%'.format,
         'difPrice': '{:,.2f}'.format,
         'Price': '€{:,.2f}'.format,
