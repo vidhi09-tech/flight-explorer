@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import calendar
 from datetime import datetime
+from datetime import date
 from time import gmtime, strftime
 import glob
 import os
