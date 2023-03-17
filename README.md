@@ -1,9 +1,9 @@
 # Comparing Kayak flight prices
 
 ## Goals
-Collecting and analyzing plane ticket prices - scraped from Kayak Explore - to determine whether factors like day of the week and time of the day where tickets are usually cheaper.  
+Collecting and analyzing plane ticket prices - scraped from Kayak Explore - to determine whether factors like day of the week and time of the day directly influence ticket prices.  
 
-Also, I will set up an email alert system to let me know when the ticket prices are lower than usual (or ever) for some route I'm interested in.
+Also, I have set up an **email alert system to let me know when the ticket prices are lower than usual (or ever) for some route I'm interested in.**
 
 Why not just use Google Flights or other competitor, you might ask? With this project, I can track price changes and receive alerts for 100s of routes compiled in a single email without having to set up several alerts. And also, I want the expertise of integrating several systems and architectures using Python, SQL, BigQuery, GitHub Actions (and more to come).
 
