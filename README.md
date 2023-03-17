@@ -9,23 +9,25 @@ Why not just use Google Flights or other competitor, you might ask? With this pr
 
 Airports of interest so far: Porto, Lisbon, Madrid, Milano (Malpensa) and Napoli
 
-Automated task:
+Automated data collection task:
 [![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
 
-## Should (and will) do it:
+## Roadmap
+### Should (and will) do it:
 
 - [x] Setting up automated scraper script ( Python )  
 - [x] Determine criteria for finding out if a price should be reported
 - [x] Test e-mail output
 - [x] Integrate Github Actions and Google Big Query
-- [ ] Determine price baseline for each destination
+- [x] Determine price baseline for each destination
+- [x] Read baselines from files stored in Github 
+- [x] Setting up alert system that will send automated e-mail when tickets are available at good prices
 - [ ] Save new baselines to Google Bigquery
 - [ ] Read baselines from Google Bigquery at the end of each execution
-- [ ] Setting up alert system that will send automated e-mail when tickets are available at good prices (see item above)
 - [ ] Store results in a Google Bigquery database
 - [ ] Design diagram explaining project flow
 
-## Would be nice:
+### Would be nice:
 - [ ] Create parameter file for reading configs like departing airports and filter conditions (time of the year, one-way or round trip, etc.)
 - [ ] Streamlit page to show some results
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
