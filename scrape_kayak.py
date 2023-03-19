@@ -135,8 +135,9 @@ def compare_prices(newdf,basedf,city):
     smallerUnder100=len(smaller.query("Price <= 100"))
     smallerUnder50=len(smaller.query("Price <= 50"))
 
-    summarydf=pd.DataFrame(columns=['Date', 'CityOrigin', 'SmallerPrices', 'SmallerUnder100', 'SmallerUnder50'])
-    summarydf.loc[0] = [date.today(), city,  len(smaller), smallerUnder100, smallerUnder50]
+    summarydf=pd.DataFrame(columns=['Date', 'CityOrigin','Filename', 'SmallerPrices', 'SmallerUnder100', 'SmallerUnder50'])
+    filename = strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023'
+    summarydf.loc[0] = [date.today(), city, filename, len(smaller), smallerUnder100, smallerUnder50]
     
     newbase = smaller.loc[:,["City","Country","year_depart","month_depart","Price","meanPrice","medianPrice","timestamp"]].rename(columns={"Price":"minPrice"})
     newbase.insert(0, 'CityOrigin', city)
