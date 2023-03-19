@@ -138,7 +138,10 @@ def compare_prices(newdf,basedf,city):
     summarydf=pd.DataFrame(columns=['Date', 'CityOrigin', 'SmallerPrices', 'SmallerUnder100', 'SmallerUnder50'])
     summarydf.loc[0] = [date.today(), city,  len(smaller), smallerUnder100, smallerUnder50]
     
-    return(smaller,summarydf)
+    newbase = smaller.loc[:,["City","Country","year_depart","month_depart","Price","meanPrice","medianPrice","timestamp"]].rename(columns={"Price":"minPrice"})
+    newbase.insert(0, 'CityOrigin', city)
+    
+    return(smaller,summarydf,newbase)
 
 def send_mail(smallerprices,summarydf,city):
     """
@@ -163,7 +166,6 @@ def send_mail(smallerprices,summarydf,city):
     sender = 'rafabelokurows@gmail.com' #if you're reading this and you're not me, change this e-mail to whichever e-mail you wanna use for this.
     recipient = 'rafabelokurows@gmail.com' #if you're reading this and you're not me, change this e-mail to whichever e-mail you wanna use for this.
     password = os.getenv('APP_PASSWORD') #the APP PASSWORD as generated on the Security Settings of the Gmail account configured above.
-    
     
     if len(smallerprices) == 0: #if none of the prices are smaller than historical minimum prices
         subject = 'Sorry, no deals this time for '+city
@@ -193,14 +195,86 @@ def send_mail(smallerprices,summarydf,city):
 
     print('Email with deals sent to ',recipient)
     
+def auth_bgq():
+    from google.cloud import bigquery
+    from google.oauth2 import service_account
+    import base64
+
+    key = os.getenv('GCP_PRIVATE_KEY')
+    key_b64 = base64.b64encode(key.encode())
+    key_decoded = base64.b64decode(key_b64).decode()
+    project = os.getenv('GCP_PROJECT_ID')
+    project_b64 = base64.b64encode(project.encode())
+    project_decoded = base64.b64decode(project_b64).decode()
+    clientid = os.getenv('GCP_CLIENT_ID')
+    client_b64 = base64.b64encode(clientid.encode())
+    client_decoded = base64.b64decode(client_b64).decode()
+
+
+    service_account_info = {
+      "type": "service_account",
+      "project_id": "project",
+      "private_key_id": "34da29e1c968cf2bd1e5d16a47d5ea8030b90d7f",
+      "private_key": "-----BEGIN PRIVATE KEY-----\nkey\n-----END PRIVATE KEY-----\n",
+      "client_email": "teste-11@basedosdados-370918.iam.gserviceaccount.com",
+      "client_id": "client",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/teste-11%40basedosdados-370918.iam.gserviceaccount.com"
+    }
+    service_account_info["private_key"] = service_account_info["private_key"].replace("key", key_decoded).replace("\\n", "\n")
+    service_account_info["project_id"] = service_account_info["project_id"].replace("project", project_decoded).replace("\\n", "\n")
+    service_account_info["client_id"] = service_account_info["client_id"].replace("client", client_decoded).replace("\\n", "\n")
+
+    SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
+
+    credentials = service_account.Credentials.from_service_account_info(
+                service_account_info, scopes=SCOPES)
+    
+    return(credentials)
+
+def write_summary_bgq(summarydf, city):
+    credentials = auth_bgq()
+    #summarydf.to_gbq(destination_table='flightexplorer.resumo',
+    #                                     if_exists="append",
+    #                                     project_id='basedosdados-370918',credentials=credentials)
+    try:
+    # Save DataFrame to BigQuery table
+        summarydf.to_gbq(destination_table='flightexplorer.resumo',
+                                             if_exists="append",
+                                             project_id='basedosdados-370918',credentials=credentials)
+        print("New baseline for "+city+" dataframe written to BigQuery")
+    except Exception as e:
+        print(f"Error saving data to BigQuery table: {e}") 
+    
+def write_newbaseline_bgq(newbasedf, city):
+    credentials = auth_bgq()
+    
+    try:
+    # Save DataFrame to BigQuery table
+        newbasedf.to_gbq(destination_table='flightexplorer.baseline',
+                                             if_exists="append",
+                                             project_id='basedosdados-370918',credentials=credentials)
+        print("New baseline for "+city+" dataframe written to BigQuery")
+    except Exception as e:
+        print(f"Error saving data to BigQuery table: {e}") 
+    
+    
+    
 origins = ['OPO','MXP','NAP','LIS','MAD']  #airports to find ticket prices
 
 for origin in origins:
     df = scrape_kayak(airport = origin)
     baseline = generate_baseline(city = origin) #after generating the csv file, recompiles the baseline file, finding minimum prices for each route/month
     df.to_csv('data/'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves a CSV file with all prices for each origin airport
-    a,b = compare_prices(newdf = df, basedf = baseline, city = origin) #compares prices obtained in this run against baseline of all files stored in "data" folder
+    a,b,c = compare_prices(newdf = df, basedf = baseline, city = origin) #compares prices obtained in this run against baseline of all files stored in "data" folder
     baseline.to_csv('data/baseline_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves new baseline
-    a.to_csv('data/smallerprices_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves CSV files with prices found in this run that were less than baseline minimum amounts
     b.to_csv('data/summary_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #and summary file, for good measure
+    if (len(a)> 100):
+        a.to_csv('data/smallerprices_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves CSV files with prices found in this run that were less than baseline minimum amounts
+    if (len(c)> 100):
+        c.to_csv('data/new_baseline'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #and summary file, for good measure
     send_mail(smallerprices = a,summarydf = b,city = origin) #sends an email for each origin airport reporting how many prices were lower than the historical minimum
+    write_summary_bgq(summarydf = b,city = origin)
+    write_newbaseline_bgq(newbasedf = c,city = origin)
