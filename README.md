@@ -38,9 +38,9 @@ In addition to the obvious learning curve of each tool and package used:
 - [ ] Read baselines from Google Bigquery at the end of each execution
 - [x] Store results in a Google Bigquery database
 - [ ] Adjust small details on email sent with deals:
-  * Add weekday
-  * Order by price (asc)
-  * Add number of days
+   - [ ] Add weekday
+   - [ ] Order by price (asc)
+   - [ ] Add number of days
 - [ ] Design diagram explaining project/data flow
 
 ### Would be nice:
