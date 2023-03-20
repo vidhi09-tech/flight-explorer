@@ -34,9 +34,13 @@ In addition to the obvious learning curve of each tool and package used:
 - [x] Determine price baseline for each destination
 - [x] Read baselines from files stored in Github 
 - [x] Setting up alert system that will send automated e-mail when tickets are available at good prices
-- [ ] Save new baselines to Google Bigquery
+- [x] Save new baselines to Google Bigquery
 - [ ] Read baselines from Google Bigquery at the end of each execution
-- [ ] Store results in a Google Bigquery database
+- [x] Store results in a Google Bigquery database
+- [ ] Adjust small details on email sent with deals:
+  * Add weekday
+  * Order by price (asc)
+  * Add number of days
 - [ ] Design diagram explaining project/data flow
 
 ### Would be nice:
