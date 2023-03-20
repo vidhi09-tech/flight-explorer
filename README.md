@@ -37,11 +37,13 @@ In addition to the obvious learning curve of each tool and package used:
 - [x] Save new baselines to Google Bigquery
 - [ ] Read baselines from Google Bigquery at the end of each execution
 - [x] Store results in a Google Bigquery database
+- [ ] Add one airport of interest: São Paulo
 - [ ] Adjust small details on email sent with deals:
    - [ ] Add weekday
    - [ ] Order by price (asc)
    - [ ] Add number of days
 - [ ] Design diagram explaining project/data flow
+- [ ] Set up new automation to acquire data from another of Kayak's APIs - that one shows every possible flight on a certain route
 
 ### Would be nice:
 - [ ] Create parameter file for reading configs like departing airports and filter conditions (time of the year, one-way or round trip, etc.)
@@ -49,6 +51,6 @@ In addition to the obvious learning curve of each tool and package used:
 - [ ] Powerpoint presentation highlighting challenges, solutions and results
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
 
-Automated data collection task:  
+Automated data collection task No. 1:  
 
 [![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
