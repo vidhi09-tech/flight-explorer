@@ -47,6 +47,7 @@ In addition to the obvious learning curve of each tool and package used:
 
 ### Would be nice:
 - [ ] Create parameter file for reading configs like departing airports and filter conditions (time of the year, one-way or round trip, etc.)
+- [ ] Create parameter with different email addresses to send results for each city
 - [ ] Streamlit page to show results
 - [ ] Powerpoint presentation highlighting challenges, solutions and results
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
