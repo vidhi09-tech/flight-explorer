@@ -263,7 +263,7 @@ def write_newbaseline_bgq(newbasedf, city):
     
     
     
-origins = ['OPO','MXP','NAP','LIS','MAD']  #airports to find ticket prices
+origins = ['OPO','MXP','NAP','LIS','MAD','CGH','GRU']  #airports to find ticket prices
 
 for origin in origins:
     df = scrape_kayak(airport = origin)
