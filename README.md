@@ -38,11 +38,12 @@ In addition to the obvious learning curve of each tool and package used:
 - [ ] Read baselines from Google Bigquery at the end of each execution
 - [x] Store results in a Google Bigquery database
 - [ ] Add one airport of interest: São Paulo
-- [ ] Adjust small details on email sent with deals:
-   - [ ] Add weekday
-   - [ ] Order by price (asc)
-   - [ ] Add number of days
+- [x] Adjust small details on email sent with deals:
+   - [x] Add weekday
+   - [x] Order by price (asc)
+   - [x] Add number of days
 - [ ] Design diagram explaining project/data flow
+- [ ] Create slide deck with project summary and goals attained
 - [ ] Set up new automation to acquire data from another of Kayak's APIs - that one shows every possible flight on a certain route
 
 ### Would be nice:
