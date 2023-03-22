@@ -131,6 +131,9 @@ def compare_prices(newdf,basedf,city):
     compare['difPrice'] = (compare['Price'] -compare['minPrice'])
     compare['difPricePct'] = ((compare['Price'] -compare['minPrice']) / compare['minPrice'])*100
     smaller = compare.query("is_smaller").sort_values('difPricePct')
+    smaller['weekday_depart'] = pd.DatetimeIndex(smaller['Depart']).day_name()
+    smaller['weekday_return'] = pd.DatetimeIndex(smaller['Return']).day_name()
+    smaller['diff_days'] = (pd.DatetimeIndex(smaller['Return']) - pd.DatetimeIndex(smaller['Depart']))
 
     smallerUnder100=len(smaller.query("Price <= 100"))
     smallerUnder50=len(smaller.query("Price <= 50"))
@@ -154,12 +157,12 @@ def send_mail(smallerprices,summarydf,city):
     Nothing, only send the e-mail(s).
     """
     tableSummary = summarydf.to_html()
-    tableSmallerprices = smallerprices.loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
+    tableSmallerprices = smallerprices.loc[:,["CityOrigin","City","Country","Price","Depart","weekday_depart","Return","weekday_return","diff_days","minPrice","difPrice","difPricePct","Link"]].sort_values('Price',ascending=True).reset_index(drop=True).sort_values('Depart').to_html(formatters={
         'difPricePct': '{:,.2f}%'.format,
         'difPrice': '{:,.2f}'.format,
         'Price': '€{:,.2f}'.format,
         'minPrice': '€{:,.2f}'.format},render_links=True)
-    tableUnder100 = smallerprices.query("difPricePct < 0 & Price < 100").loc[:,["CityOrigin","City","Country","Depart","Return","Price","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
+    tableUnder100 = smallerprices.query("difPricePct < 0 & Price < 100").loc[:,["CityOrigin","City","Country","Depart","weekday_depart","Return","weekday_return","diff_days","minPrice","difPrice","difPricePct","Link"]].reset_index(drop=True).sort_values('Depart').to_html(formatters={
         'difPricePct': '{:,.2f}%'.format,
         'difPrice': '{:,.2f}'.format,
         'Price': '€{:,.2f}'.format,
