@@ -20,10 +20,6 @@ In addition to the obvious learning curve of each tool and package used:
 - Scalability - Pretty soon we could be dealing with hundreds of files and thousands of rows
 - Resource efficiency - Reducing BigQuery storage and queries must be a priority
 
-## Limitations
-- No way to obtain historical prices as the API used only returns upcoming flights.
-- Straightforward logic for determining which prices to report: simply reports flights which prices are lower than historical minimum prices for that route/month
-
 ## Roadmap
 ### Should (and will) do it:
 
@@ -54,6 +50,11 @@ In addition to the obvious learning curve of each tool and package used:
 - [ ] Powerpoint presentation highlighting challenges, solutions and results
 - [ ] Ad-hoc analysis to determine with a good amount of certainty best times to buy
 
-Automated data collection task No. 1:  
+Automated data collection task:  
 
 [![Scraping flights from Kayak](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml/badge.svg)](https://github.com/rafabelokurows/scrapingKayak/actions/workflows/scrape.yml)
+
+
+## Limitations
+- No way to obtain historical prices as the API used only returns upcoming flights.
+- Straightforward logic for determining which prices to report: simply reports flights which prices are lower than historical minimum prices for that route/month
