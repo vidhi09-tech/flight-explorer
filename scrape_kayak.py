@@ -264,7 +264,7 @@ def write_newbaseline_bgq(newbasedf, city):
     except Exception as e:
         print(f"Error saving data to BigQuery table: {e}") 
 
- def scrape_destination(origin,destination):
+def scrape_destination(origin,destination):
     url = 'https://www.kayak.com/a/api/flightPricePrediction/predictCalendar?dateMode=range&distinct=true&origin='+origin+'&destination='+destination+'&locale=PT'
     response = requests.post(url).json()
     df2=pd.DataFrame(response['predictions'])
