@@ -264,20 +264,9 @@ def write_newbaseline_bgq(newbasedf, city):
     except Exception as e:
         print(f"Error saving data to BigQuery table: {e}") 
 
- def scrape_destination(origin = 'OPO',destination=''):
+ def scrape_destination(origin,destination):
     url = 'https://www.kayak.com/a/api/flightPricePrediction/predictCalendar?dateMode=range&distinct=true&origin='+origin+'&destination='+destination+'&locale=PT'
     response = requests.post(url).json()
-    #param=response['parameters']
-    #data = {'locale': param['locale'], 
-    #        'currency': param['currency'], 
-    #        'originAirport': param['originAirport'], 
-    #        'destinationAirport': param['destinationAirport'], 
-    #        'originAirports': ','.join(param['originAirports']), 
-    #        'destinationAirports': ','.join(param['destinationAirports']), 
-    #        'startDate': param['startDate'], 
-    #        'isOneWay': param['isOneWay'], 
-    #        'isNonstop': param['isNonstop']}
-    #df = pd.DataFrame(data, index=[0])
     df2=pd.DataFrame(response['predictions'])
     df2['weekday_depart'] = pd.DatetimeIndex(df2['startDate']).day_name()
     df2['weekday_return'] = pd.DatetimeIndex(df2['endDate']).day_name()
@@ -285,7 +274,6 @@ def write_newbaseline_bgq(newbasedf, city):
     df2['diff_days'] = (pd.DatetimeIndex(df2['endDate']) - pd.DatetimeIndex(df2['startDate']))
     df2['days_advance'] = pd.to_datetime(df2['startDate'], infer_datetime_format=True)-pd.to_datetime(date.today())
 
-    #return(df,df2)
     return(df2)
 
 #### All prices ####
