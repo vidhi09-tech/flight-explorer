@@ -263,9 +263,48 @@ def write_newbaseline_bgq(newbasedf, city):
         print("New baseline for "+city+" dataframe written to BigQuery")
     except Exception as e:
         print(f"Error saving data to BigQuery table: {e}") 
-    
-    
-    
+
+ def scrape_destination(origin = 'OPO',destination=''): 
+    url = 'https://www.kayak.com/a/api/flightPricePrediction/predictCalendar?dateMode=range&distinct=true&origin='+origin+'&destination='+destination+'&locale=PT'
+    response = requests.post(url).json()
+    #param=response['parameters']
+    #data = {'locale': param['locale'], 
+    #        'currency': param['currency'], 
+    #        'originAirport': param['originAirport'], 
+    #        'destinationAirport': param['destinationAirport'], 
+    #        'originAirports': ','.join(param['originAirports']), 
+    #        'destinationAirports': ','.join(param['destinationAirports']), 
+    #        'startDate': param['startDate'], 
+    #        'isOneWay': param['isOneWay'], 
+    #        'isNonstop': param['isNonstop']}
+    #df = pd.DataFrame(data, index=[0])
+    df2=pd.DataFrame(response['predictions'])
+    df2['weekday_depart'] = pd.DatetimeIndex(df2['startDate']).day_name()
+    df2['weekday_return'] = pd.DatetimeIndex(df2['endDate']).day_name()
+    df2['diff_days'] = (pd.DatetimeIndex(df2['endDate']) - pd.DatetimeIndex(df2['startDate']))
+    df2['diff_days'] = (pd.DatetimeIndex(df2['endDate']) - pd.DatetimeIndex(df2['startDate']))
+    df2['days_advance'] = pd.to_datetime(df2['startDate'], infer_datetime_format=True)-pd.to_datetime(date.today())
+
+    #return(df,df2)
+    return(df2)
+
+#### All prices ####
+routes = pd.read_excel('routes.xlsx')
+#df = pd.DataFrame({'origin': ['OPO','OPO', 'LIS', 'LIS'], 'destination': ['MAD', 'BCN','MAD', 'BCN']})
+results = []
+# Loop through the dataframe and call the scrape_destination function for each row
+for index, row in routes.iterrows():
+    origin = row['origin']
+    destination = row['destination']
+    res = scrape_destination(origin=origin, destination=destination)
+    results.append(res)
+# Concatenate the results into a single dataframe
+all_prices = pd.concat(results)
+min_prices = all_prices.groupby(['originAirport','destinationAirport']).agg(minPrice=('minPrice','min')).reset_index()
+all_prices.to_csv('data/all_prices/all_prices'+strftime("%Y%m%d%H%M", gmtime())+'.csv',index=False)
+min_prices.to_csv('data/all_prices/min_prices'+strftime("%Y%m%d%H%M", gmtime())+'.csv',index=False)
+
+#### Lowest price for each destination ####
 origins = ['OPO','MXP','NAP','LIS','MAD']  #airports to find ticket prices
 
 for origin in origins:
