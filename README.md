@@ -44,7 +44,8 @@ In addition to the obvious learning curve of each tool and package used:
    - [x] Add number of days
 - [ ] Design diagram explaining project/data flow
 - [ ] Create slide deck with project summary and goals attained
-- [ ] Set up new automation to acquire data from another of Kayak's APIs - that one shows every possible flight on a certain route
+- [x] Set up new automation to acquire data from another of Kayak's APIs - that one shows every possible flight on a certain route
+- [ ] Decide what to do regarding large files resulted from calling the second API (1.5K rows for each route)
 
 ### Would be nice:
 - [ ] Create parameter file for reading configs like departing airports and filter conditions (time of the year, one-way or round trip, etc.)
