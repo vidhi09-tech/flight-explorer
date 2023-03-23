@@ -24,7 +24,7 @@ jobs:
       - name: install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install requests pandas google.cloud.bigquery pandas-gbq
+          pip install requests pandas google.cloud.bigquery pandas-gbq openpyxl
                     
       - name: execute py script # run sj-gobierno.py to get the latest data
         run: python scrape_kayak.py
