@@ -144,6 +144,8 @@ def compare_prices(newdf,basedf,city):
     
     newbase = smaller.loc[:,["City","Country","year_depart","month_depart","Price","meanPrice","medianPrice","timestamp"]].rename(columns={"Price":"minPrice"})
     newbase.insert(0, 'CityOrigin', city)
+    newbase['timestamp'] = datetime.now()
+    newbase['timestamp']  = newbase['timestamp'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
     
     return(smaller,summarydf,newbase)
 
@@ -306,6 +308,6 @@ for origin in origins:
         a.to_csv('data/smallerprices_'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #saves CSV files with prices found in this run that were less than baseline minimum amounts
     if (len(c)> 100):
         c.to_csv('data/new_baseline'+strftime("%Y%m%d%H%M", gmtime())+'_'+origin+'_2023.csv',index=False) #and summary file, for good measure
-    send_mail(smallerprices = a,summarydf = b,city = origin) #sends an email for each origin airport reporting how many prices were lower than the historical minimum
+    #send_mail(smallerprices = a,summarydf = b,city = origin) #sends an email for each origin airport reporting how many prices were lower than the historical minimum
     write_summary_bgq(summarydf = b,city = origin)
     write_newbaseline_bgq(newbasedf = c,city = origin)
